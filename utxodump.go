@@ -18,6 +18,14 @@ import "encoding/hex" // convert byte slice to hexadecimal
 import "strings"      // parsing flags from command line
 import "runtime"      // Check OS type for file-handler limitations
 
+// Magic values for addresses.
+const addrPubkey byte = 28
+const addrScript byte = 30
+const addrPubkeyTn byte = 88
+const addrScriptTn byte = 90
+const addrHrp string = "chi"
+const addrHrpTn string = "chitn"
+
 func main() {
 
     // Version
@@ -385,9 +393,9 @@ func main() {
 		                case nsize == 0:
 		                    if fieldsSelected["address"] { // only work out addresses if they're wanted
 		                        if testnet == true {
-		                            address = keys.Hash160ToAddress(script, []byte{0x6f}) // (m/n)address - testnet addresses have a special prefix
+		                            address = keys.Hash160ToAddress(script, []byte{addrPubkeyTn}) // (m/n)address - testnet addresses have a special prefix
 		                        } else {
-		                            address = keys.Hash160ToAddress(script, []byte{0x00}) // 1address
+		                            address = keys.Hash160ToAddress(script, []byte{addrPubkey}) // 1address
 		                        }
 		                    }
 		                    scriptType = "p2pkh"
@@ -397,9 +405,9 @@ func main() {
 		                case nsize == 1:
 		                    if fieldsSelected["address"] { // only work out addresses if they're wanted
 		                        if testnet == true {
-		                            address = keys.Hash160ToAddress(script, []byte{0xc4}) // 2address - testnet addresses have a special prefix
+		                            address = keys.Hash160ToAddress(script, []byte{addrScriptTn}) // 2address - testnet addresses have a special prefix
 		                        } else {
-		                            address = keys.Hash160ToAddress(script, []byte{0x05}) // 3address
+		                            address = keys.Hash160ToAddress(script, []byte{addrScript}) // 3address
 		                        }
 		                    }
 		                    scriptType = "p2sh"
@@ -433,9 +441,9 @@ func main() {
 		                            // }
 
 		                            if testnet == true {
-		                                address = keys.PublicKeyToAddress(script, []byte{0x6f}) // (m/n)address - testnet addresses have a special prefix
+		                                address = keys.PublicKeyToAddress(script, []byte{addrPubkeyTn}) // (m/n)address - testnet addresses have a special prefix
 		                            } else {
-		                                address = keys.PublicKeyToAddress(script, []byte{0x00}) // 1address
+		                                address = keys.PublicKeyToAddress(script, []byte{addrPubkey}) // 1address
 		                            }
 		                        }
 		                    }
@@ -463,9 +471,9 @@ func main() {
 
 		                    if fieldsSelected["address"] { // only work out addresses if they're wanted
 		                        if testnet == true {
-		                            address, _ = bech32.SegwitAddrEncode("tb", int(version), programint) // hrp (string), version (int), program ([]int)
+		                            address, _ = bech32.SegwitAddrEncode(addrHrpTn, int(version), programint) // hrp (string), version (int), program ([]int)
 		                        } else {
-		                            address, _ = bech32.SegwitAddrEncode("bc", int(version), programint) // hrp (string), version (int), program ([]int)
+		                            address, _ = bech32.SegwitAddrEncode(addrHrp, int(version), programint) // hrp (string), version (int), program ([]int)
 		                        }
 		                    }
 
@@ -485,9 +493,9 @@ func main() {
 
 		                    if fieldsSelected["address"] { // only work out addresses if they're wanted
 		                        if testnet == true {
-		                            address, _ = bech32.SegwitAddrEncode("tb", int(version), programint) // testnet bech32 addresses start with tb
+		                            address, _ = bech32.SegwitAddrEncode(addrHrpTn, int(version), programint) // testnet bech32 addresses start with tb
 		                        } else {
-		                            address, _ = bech32.SegwitAddrEncode("bc", int(version), programint) // mainnet bech32 addresses start with bc
+		                            address, _ = bech32.SegwitAddrEncode(addrHrp, int(version), programint) // mainnet bech32 addresses start with bc
 		                        }
 		                    }
 
@@ -507,9 +515,9 @@ func main() {
 
 		                    if fieldsSelected["address"] { // only work out addresses if they're wanted
 		                        if testnet == true {
-		                            address, _ = bech32.SegwitAddrEncode("tb", version, programint) // testnet bech32 addresses start with tb
+		                            address, _ = bech32.SegwitAddrEncode(addrHrpTn, version, programint) // testnet bech32 addresses start with tb
 		                        } else {
-		                            address, _ = bech32.SegwitAddrEncode("bc", version, programint) // mainnet bech32 addresses start with bc
+		                            address, _ = bech32.SegwitAddrEncode(addrHrp, version, programint) // mainnet bech32 addresses start with bc
 		                        }
 		                    }
 
