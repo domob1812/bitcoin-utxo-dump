@@ -4,6 +4,7 @@ package main
 import "github.com/in3rsha/bitcoin-utxo-dump/bitcoin/btcleveldb" // chainstate leveldb decoding functions
 import "github.com/in3rsha/bitcoin-utxo-dump/bitcoin/keys"   // bitcoin addresses
 import "github.com/in3rsha/bitcoin-utxo-dump/bitcoin/bech32" // segwit bitcoin addresses
+import "github.com/in3rsha/bitcoin-utxo-dump/namecoin/namescript"
 
 import "github.com/syndtr/goleveldb/leveldb" // go get github.com/syndtr/goleveldb/leveldb
 import "github.com/syndtr/goleveldb/leveldb/opt" // set no compression when opening leveldb
@@ -179,7 +180,7 @@ func main() {
 
     // Stats - keep track of interesting stats as we read through leveldb.
     var totalAmount int64 = 0 // total amount of satoshis
-    scriptTypeCount := map[string]int{"p2pk":0, "p2pkh":0, "p2sh":0, "p2ms":0, "p2wpkh":0, "p2wsh":0, "p2tr": 0, "non-standard": 0} // count each script type
+    scriptTypeCount := map[string]int{"p2pk":0, "p2pkh":0, "p2sh":0, "p2ms":0, "p2wpkh":0, "p2wsh":0, "p2tr": 0, "name": 0, "non-standard": 0} // count each script type
 
 
     // Declare obfuscateKey (a byte slice)
@@ -524,10 +525,15 @@ func main() {
 		                    scriptType = "p2tr"
 		                    scriptTypeCount["p2tr"] += 1
 
+                                // Name scripts?
+                                case namescript.IsNameOp (script):
+                                    scriptType = "name"
+                                    scriptTypeCount["name"] += 1
+
 		                // Non-Standard (if the script type hasn't been identified and set then it remains as an unknown "non-standard" script)
 		                default:
-		                	scriptType = "non-standard"
-		                    scriptTypeCount["non-standard"] += 1
+                                    scriptType = "non-standard"
+                                    scriptTypeCount["non-standard"] += 1
 		                
 		        	} // switch
 		        	
